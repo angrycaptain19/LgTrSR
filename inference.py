@@ -7,28 +7,26 @@ from util import load_model, get_args, get_device, set_env, get_class
 @torch.no_grad()
 def inference(args, dataloder, model, output_dir, DEVICE):
 
-    f = open(output_dir, 'w')
+    with open(output_dir, 'w') as f:
+        model = model.to(DEVICE)
+        model.eval()
+        state_h, state_c = model.init_state()
+        state_h = state_h.to(DEVICE)
+        state_c = state_h.to(DEVICE)
 
-    model = model.to(DEVICE)
-    model.eval()
-    state_h, state_c = model.init_state()
-    state_h = state_h.to(DEVICE)
-    state_c = state_h.to(DEVICE)
+        i = 0
+        for batch, (user_id, sequence) in enumerate(dataloder):
+            sequence = sequence[:,1:].to(DEVICE)
 
-    i = 0
-    for batch, (user_id, sequence) in enumerate(dataloder):
-        sequence = sequence[:,1:].to(DEVICE)
+            #y_pred, _ = model(sequence, (state_h, state_c)) # when use lgtrnet_v4 model, you need to use this line code since it doesn't have state_h and state_c.
+            y_pred, (state_h, state_c) = model(sequence, (state_h, state_c))
+            #y = int(torch.argmax(y_pred).data)
+            #f.write('%s\n' % y)
+            topk = torch.topk(y_pred, 10)[1].data[0].tolist()
+            f.write('%s\n' % topk)
 
-        #y_pred, _ = model(sequence, (state_h, state_c)) # when use lgtrnet_v4 model, you need to use this line code since it doesn't have state_h and state_c.
-        y_pred, (state_h, state_c) = model(sequence, (state_h, state_c))
-        #y = int(torch.argmax(y_pred).data)
-        #f.write('%s\n' % y)
-        topk = torch.topk(y_pred, 10)[1].data[0].tolist()
-        f.write('%s\n' % topk)
-
-        i += 1
-        #if i > 3 : break
-    f.close()
+            i += 1
+            #if i > 3 : break
 
 if __name__ == '__main__':
     args = set_env(kind='zf')   #kind=['ml' or 'zf']

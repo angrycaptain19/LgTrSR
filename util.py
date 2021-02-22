@@ -22,27 +22,24 @@ def get_args():
 
 def get_device():
     USE_CUDA = torch.cuda.is_available()
-    DEVICE = torch.device("cuda" if USE_CUDA else "cpu")
-    return DEVICE
+    return torch.device("cuda" if USE_CUDA else "cpu")
 
 def set_env(root_path='.', kind='zf'):
     # for train
-    if not 'SM_CHANNEL_TRAIN' in os.environ :
+    if 'SM_CHANNEL_TRAIN' not in os.environ:
         os.environ['SM_CHANNEL_TRAIN'] = '%s/data-%s/' % (root_path, kind)
-    if not 'SM_MODEL_DIR' in os.environ:
+    if 'SM_MODEL_DIR' not in os.environ:
         os.environ['SM_MODEL_DIR'] = '%s/model/' % root_path
 
     # for inference
-    if not 'SM_CHANNEL_EVAL' in os.environ :
+    if 'SM_CHANNEL_EVAL' not in os.environ:
         os.environ['SM_CHANNEL_EVAL'] = '%s/data-%s/' % (root_path, kind)
-    if not 'SM_CHANNEL_MODEL' in os.environ :
+    if 'SM_CHANNEL_MODEL' not in os.environ:
         os.environ['SM_CHANNEL_MODEL'] = '%s/model/' % root_path
-    if not 'SM_OUTPUT_DATA_DIR' in os.environ :
+    if 'SM_OUTPUT_DATA_DIR' not in os.environ:
         os.environ['SM_OUTPUT_DATA_DIR'] = '%s/output/' % root_path
 
-    args = get_args()
-
-    return args
+    return get_args()
 
 def save_model(model, model_dir, train_loss, val_loss):
     path = os.path.join(model_dir, '{:.4f}-{:.4f}-model.pth'.format(train_loss, val_loss))
@@ -101,11 +98,11 @@ def get_class(filename):
             user = line.split(':')[0]
             num = line.split(':')[1].split(',')
             for item in num:
-                if item in res_dict.keys():
+                if item in res_dict:
                     res_dict[eval(item)] += 1
                 else:
                     res_dict[eval(item)] = 1
-            #print('the user of %s has been done!', user)
+                    #print('the user of %s has been done!', user)
         print('all of users have been done!')
     item_id = list(res_dict.keys())
     return len(item_id)

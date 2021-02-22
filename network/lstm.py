@@ -66,9 +66,21 @@ class Model(nn.Module):
 
     def init_state(self):
         if self.bi_lstm:
-            hidden = (torch.zeros(2*self.num_layers, self.sequence_length, self.lstm_size).to(self.DEVICE),
-                      torch.zeros(2*self.num_layers, self.sequence_length, self.lstm_size).to(self.DEVICE))
+            return (
+                torch.zeros(
+                    2 * self.num_layers, self.sequence_length, self.lstm_size
+                ).to(self.DEVICE),
+                torch.zeros(
+                    2 * self.num_layers, self.sequence_length, self.lstm_size
+                ).to(self.DEVICE),
+            )
+
         else:
-            hidden = (torch.zeros(self.num_layers, self.sequence_length, self.lstm_size).to(self.DEVICE),
-                      torch.zeros(self.num_layers, self.sequence_length, self.lstm_size).to(self.DEVICE))
-        return hidden
+            return (
+                torch.zeros(
+                    self.num_layers, self.sequence_length, self.lstm_size
+                ).to(self.DEVICE),
+                torch.zeros(
+                    self.num_layers, self.sequence_length, self.lstm_size
+                ).to(self.DEVICE),
+            )

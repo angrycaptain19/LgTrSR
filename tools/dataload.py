@@ -34,7 +34,7 @@ class DataProcess():
     def load_dataset(self):
         names = ['user_id', 'sequence']
         train_df = pd.read_csv(self.file_name, delimiter=':', names=names)
-        train_df['idx'] = range(0, len(train_df))
+        train_df['idx'] = range(len(train_df))
         train_df['sequence'] = train_df['sequence'].map(self.str_to_list_max_len).apply(lambda x: list(map(int, x)))
         #print(train_df.head())
         return train_df

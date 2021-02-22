@@ -161,9 +161,14 @@ class Model(nn.Module):
         return logits[:, -1, :], None
 
     def init_state(self):
-        hidden = (torch.zeros(self.num_layers, self.sequence_length, self.lstm_size).to(self.DEVICE),
-                torch.zeros(self.num_layers, self.sequence_length, self.lstm_size).to(self.DEVICE))
-        return hidden
+        return (
+            torch.zeros(self.num_layers, self.sequence_length, self.lstm_size).to(
+                self.DEVICE
+            ),
+            torch.zeros(self.num_layers, self.sequence_length, self.lstm_size).to(
+                self.DEVICE
+            ),
+        )
 
 if __name__ == '__main__':
     input = torch.randn(32, 64, 300)

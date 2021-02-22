@@ -220,7 +220,7 @@ class LgattAdpBlock(nn.Module):
         gamma1 = gamma[:, 0, :]
         gamma2 = gamma[:, 1, :]
         gamma3 = gamma[:, 2, :]
-       
+
         #print(gamma1[0, 0, 0], gamma2[0, 0, 0])
         channel_x = self.channel_op(x.permute(0, 2, 1)).permute(0, 2, 1)
         global_att, _ = self_att(channel_x)
@@ -232,11 +232,9 @@ class LgattAdpBlock(nn.Module):
         local_x = self.att_cal(x, local_att)
         current_x = x[:, -1, :]
 
-        output = gamma1.expand_as(global_x) * global_x + \
+        return gamma1.expand_as(global_x) * global_x + \
                  gamma2.expand_as(local_x) * local_x + \
-                 gamma3.expand_as(current_x) * current_x 
-
-        return output
+                 gamma3.expand_as(current_x) * current_x
 
 class Model(nn.Module):
     def __init__(self, args, n_items, DEVICE):
@@ -295,6 +293,11 @@ class Model(nn.Module):
         return logits, state
 
     def init_state(self):
-        hidden = (torch.zeros(self.num_layers, self.sequence_length, self.lstm_size).to(self.DEVICE),
-                torch.zeros(self.num_layers, self.sequence_length, self.lstm_size).to(self.DEVICE))
-        return hidden
+        return (
+            torch.zeros(self.num_layers, self.sequence_length, self.lstm_size).to(
+                self.DEVICE
+            ),
+            torch.zeros(self.num_layers, self.sequence_length, self.lstm_size).to(
+                self.DEVICE
+            ),
+        )

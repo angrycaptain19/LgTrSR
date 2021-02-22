@@ -25,11 +25,11 @@ def train_model(args, data_loaders, data_lengths, DEVICE, model_dir):
     criterion = nn.CrossEntropyLoss()
     #optimizer = optim.RMSprop(model.parameters(), lr=args.lr)
     optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=1e-5)
-    
+
     best_loss = float('inf')
     for epoch in range(args.max_epochs):
         print('Epoch {}/{}'.format(epoch+1, args.max_epochs),)
-        epoch_loss = {}      
+        epoch_loss = {}
         for phase in ['train', 'val']:
             if phase == 'train':
                 model.train(True)
@@ -37,11 +37,11 @@ def train_model(args, data_loaders, data_lengths, DEVICE, model_dir):
                 model.train(False)
 
             running_loss = 0.0
-            
+
             for batch, (user_id, sequence) in enumerate(data_loaders[phase]):
                 if phase == 'train':
                     optimizer.zero_grad()
-                
+
                 state_h = model.init_state()
 
                 x = sequence[:,:-1].to(DEVICE)#[batch_size, length]
@@ -49,7 +49,7 @@ def train_model(args, data_loaders, data_lengths, DEVICE, model_dir):
                 # print(y.shape)
                 # input('check')
 
-                state_h = tuple([each.data for each in state_h])
+                state_h = tuple(each.data for each in state_h)
 
                 y_pred, state_h = model(x, state_h) #[batch_size, n_items]
 
@@ -64,11 +64,11 @@ def train_model(args, data_loaders, data_lengths, DEVICE, model_dir):
 
             epoch_loss[phase] = running_loss / data_lengths[phase]
             #input('check')
-            if phase == 'val' :
+            if phase == 'val':
                 print('Train loss: {:.4f} Val loss: {:.4f}'.format(epoch_loss['train'], epoch_loss['val']))
                 if epoch_loss['train'] < best_loss:
                     best_loss = epoch_loss['train']
-                    save_model(model, model_dir, epoch_loss['train'], epoch_loss['val'])
+                    save_model(model, model_dir, best_loss, epoch_loss['val'])
     return model
 
 def test_inference(args, DEVICE):

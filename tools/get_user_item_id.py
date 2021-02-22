@@ -9,13 +9,13 @@ def get_user_item_id(filename):
             user_id = line.split(':')[0]
             num = line.split(':')[1].split(',')
 
-            if user_id in user_dict.keys():
+            if user_id in user_dict:
                 user_dict[eval(user_id)] +=1
             else:
                 user_dict[eval(user_id)] = 1
 
             for item_id in num:
-                if item_id in item_dict.keys():
+                if item_id in item_dict:
                     item_dict[eval(item_id)] += 1
                 else:
                     item_dict[eval(item_id)] = 1
@@ -24,7 +24,7 @@ def get_user_item_id(filename):
     users_id = sorted(list(user_dict.keys()))
     items_id = sorted(list(item_dict.keys()))
     number = count
-    train_test_length = [int(number * 0.8), number - int(number * 0.8)] 
+    train_test_length = [int(number * 0.8), number - int(number * 0.8)]
     return number, train_test_length, users_id, items_id
 
 if __name__ == '__main__':
