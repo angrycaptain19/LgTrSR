@@ -34,30 +34,30 @@ The benchmark datasets I used for training and validation could be download from
 In order to speed training, I transform the dataset to the pickle format.
 
 ```
-    python tools/dataload.py
+python tools/dataload.py
 ```
 ## Training
 
 ```
-    python train.py  
-            [--max_epochs 2]  
-            [--batch_size 32]  
-            [--num_layers 3]  
-            [--lr 0.001]  
-            [--sequence_length 64]  
-            [--lstm_size 256]  
-            [--embedding_dm 50]
+python train.py  
+        [--max_epochs 2]  
+        [--batch_size 32]  
+        [--num_layers 3]  
+        [--lr 0.001]  
+        [--sequence_length 64]  
+        [--lstm_size 256]  
+        [--embedding_dm 50]
 ```
 
 ## Inference
 
 ```
-    python inference.py
+python inference.py
 ```
 ## Visualization
 
 ```
-    python tools/data_vis.py 
+python tools/data_vis.py 
 ```
 ## Citations
 Please consider citing original paper in your publications if the project helps your research. 
